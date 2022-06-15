@@ -1,0 +1,171 @@
+// import { format } from 'date-fns'
+
+import { ColumnFilter } from "./ColumnFilter";
+
+// export const COLUMNS = [
+//   {
+//     Header: 'Id',
+//     Footer: 'Id',
+//     accessor: 'id',
+//     disableFilters: true,
+//     sticky: 'left'
+//   },
+//   {
+//     Header: 'First Name',
+//     Footer: 'First Name',
+//     accessor: 'first_name',
+//     sticky: 'left'
+//   },
+//   {
+//     Header: 'Last Name',
+//     Footer: 'Last Name',
+//     accessor: 'last_name',
+//     sticky: 'left'
+//   },
+//   {
+//     Header: 'Date of Birth',
+//     Footer: 'Date of Birth',
+//     accessor: 'date_of_birth',
+   
+//   },
+//   {
+//     Header: 'Country',
+//     Footer: 'Country',
+//     accessor: 'country'
+//   },
+//   {
+//     Header: 'Phone',
+//     Footer: 'Phone',
+//     accessor: 'phone'
+//   },
+//   {
+//     Header: 'Email',
+//     Footer: 'Email',
+//     accessor: 'email'
+//   },
+//   {
+//     Header: 'Age',
+//     Footer: 'Age',
+//     accessor: 'age'
+//   },
+// ]
+export const COLUMNS = [
+  {
+    Header: 'id',
+    Footer: 'id',
+    accessor: 'id',
+    disableFilters: true,
+    sticky: 'left'
+  },
+  {
+    Header: 'Admno',
+    Footer: 'Admno',
+    accessor: 'admissionnumber',
+    sticky: 'left',
+    Filter:ColumnFilter
+  },
+  {
+    Header: 'Name',
+    Footer: 'Name',
+    accessor: 'fullname',
+    sticky: 'left',
+    Filter:ColumnFilter
+
+  },
+  {
+    Header: 'Form',
+    Footer: 'Form',
+    accessor: 'formorclas',
+    Filter:ColumnFilter
+
+   
+  },
+  {
+    Header: 'Appl_year',
+    Footer: 'Appl_year',
+    accessor: 'applicationyear',
+    Filter:ColumnFilter
+
+  },
+  {
+    Header: 'Appl_month',
+    Footer: 'Appl_month',
+    accessor: 'applicationmonth',
+    Filter:ColumnFilter
+
+  },
+  {
+    Header: 'School',
+    Footer: 'School',
+    accessor: 'secondaryschool'
+  },
+  {
+    Header: 'Par_phone',
+    Footer: 'Par_phone',
+    accessor: 'phonenumber'
+  },
+  {
+    Header: 'Pa_County',
+    Footer: 'Pa_County',
+    accessor: 'county'
+  },
+  {
+    Header: 'Pa_ward',
+    Footer: 'Pa_ward',
+    accessor: 'ward'
+  },
+  {
+    Header: 'Is_Approved',
+    Footer: 'Is_Approved',
+    accessor: 'isapproved'
+  },
+  {
+    Header: 'Amount',
+    Footer: 'Amount',
+    accessor: 'Amount'
+  },
+]
+// export const GROUPED_COLUMNS = [
+//   {
+//     Header: 'Id',
+//     Footer: 'Id',
+//     accessor: 'id'
+//   },
+//   {
+//     Header: 'Name',
+//     Footer: 'Name',
+//     columns: [
+//       {
+//         Header: 'First Name',
+//         Footer: 'First Name',
+//         accessor: 'first_name'
+//       },
+//       {
+//         Header: 'Last Name',
+//         Footer: 'Last Name',
+//         accessor: 'last_name'
+//       }
+//     ]
+//   },
+//   {
+//     Header: 'Info',
+//     Footer: 'Info',
+//     columns: [
+//       {
+//         Header: 'Date of Birth',
+//         Footer: 'Date of Birth',
+//         accessor: 'date_of_birth'
+//       },
+//       {
+//         Header: 'Country',
+//         Footer: 'Country',
+//         accessor: 'country'
+//       },
+//       {
+//         Header: 'Phone',
+//         Footer: 'Phone',
+//         accessor: 'phone'
+//       }
+//     ]
+//   }
+// ]

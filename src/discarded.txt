@@ -1,0 +1,282 @@
+
+import React, { Component, Fragment,useState,useEffect } from 'react'
+import { Link } from 'react-router-dom';
+import { fetchsecschools,applybursary } from '../../constants/ApiUtils';
+import LoadingIndicator from '../../constants/LoadingIndicator';
+import * as ROUTES from '../../constants/Routes'
+
+export default function Bursaryapplication(props) {
+
+      console.log("logging props inside Bursary application page ",props)
+      const [secschools, setsecschools] = useState(null)
+      const [isloading, setisloading] = useState(true)
+      const [error, seterror] = useState([])
+      const [serverresponse, setserverresponse] = useState([])
+      const [bursaryinput, setbursaryinput] = useState({
+        'secondarySchool':'',
+        'parentidnumber':'',
+        'parentfullname': '',
+        'parentphonenumber': '',
+        'admissionnumber': '',
+        'fullname': '',
+        'yearofstudy':'',
+      });
+
+
+
+      useEffect(() => {
+         fetchsecschools().then((response)=>{
+           if(response){
+             setsecschools(response)
+
+             setisloading(false)
+           }
+           console.log("about to show the schools ",response.content)
+         }).catch((error)=>{
+           seterror(error?.message)
+           setisloading(false)
+           console.log("about to log error from the server ",error)
+
+         })
+      }, [props.isAuthenticated])
+
+
+  const handleInput=(event)=>{
+    event.preventDefault();
+    setbursaryinput({...bursaryinput,[event.target.name]:event.target.value})
+  }
+      const handlesubmit=(event)=>{
+          event.preventDefault();
+          
+            const bursarypayload={
+              secondarySchool:parseInt(bursaryinput.secondarySchool),
+              parentidnumber:parseInt(bursaryinput.parentidnumber),
+              parentfullname:bursaryinput.parentfullname ,
+              parentphonenumber:bursaryinput.parentphonenumber ,
+              admissionnumber:bursaryinput.admissionnumber ,
+              fullname:bursaryinput.fullname ,
+              yearofstudy:parseInt(bursaryinput.yearofstudy.split('-')[0]),
+            }
+            //  console.log("logging the data about to be saved ",bursarypayload);
+             applybursary(bursarypayload).then((response)=>{
+               console.log("logging response from server ",response.message)
+               setserverresponse(response.message)
+               seterror([])
+             }).catch((error)=>{
+               seterror(error)
+               console.log("logging server errors ",error)
+             });
+
+       }
+
+       if(isloading){
+         <LoadingIndicator/>
+       }        
+       let secschoolsss;
+       console.log("logging the length ",secschools?.content?.length)
+       if(secschools?.content.length>0){
+        secschoolsss=secschools?.content.map((school,idx)=>{
+          return<><option key={school?.id} value={school?.id}>{school?.school}--{school?.county?.county}</option></>
+        })
+       }
+
+
+        return (
+            <Fragment>
+         <div className="content-wrapper">
+         <section className="content-header">
+                <div className="container-fluid">
+                  <div className="row mb-2">
+                    <div className="col-sm-6">
+                      <h1>Catalogues</h1>
+                    </div>
+                    <div className="col-sm-6">
+                      <ol className="breadcrumb float-sm-right">
+                        <li className="breadcrumb-item"><Link to={ROUTES.MAINWITHFORWARDSLASH}>Home</Link></li>
+                        <li className="breadcrumb-item active">Apply for a bursary</li>
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </section>
+             
+           <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Parent</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Student</a>
+            </li>
+          </ul> 
+          
+        
+             <section className="content">
+                <div className="container-fluid">
+                  <div className="card card-default">
+                 <div className="card-header">
+                   
+              <div className="row">
+              <div className="col-md-2"></div>
+              <div className="col-md-10">{serverresponse && <span className="help-block text-danger card-title">{serverresponse}</span>}</div>
+              <div className="col-md-2">
+
+              </div>
+            </div> 
+                    </div>
+                    </div>
+                    </div>
+                    </section>
+                      
+
+           
+              <form  onSubmit={handlesubmit} role="form"  encType="multipart/form-data">
+                    <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+
+            <section className="content">
+                <div className="container-fluid">
+                  <div className="card card-default">
+                    <div className="card-header">
+                     <p> <h3 className="card-title">School form</h3></p>
+                      
+                      <p>
+                     {/* <center> {error && <span className="help-block text-danger card-title">{error.fullname}</span>}</center> */}
+                      </p>
+
+
+                      <div className="card-tools">
+                        <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus" /></button>
+                        <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-remove" /></button>
+                      </div>
+                    </div>
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="secondarySchool" className="control-label">Select school</label>
+                            <select name="secondarySchool" onChange={handleInput} value={bursaryinput?.secondarySchool} className={(error?.secondarySchool)? 'form-control is-invalid':'form-control'} >
+                                <option>Select school</option>
+                                {secschoolsss}
+                                <span className="help-block text-danger">{error?.secondarySchool}</span>
+                              </select>
+
+                            </div>       
+                          </div>                     
+                        </div>
+                      
+                      </div>
+                      
+                  </div>
+              
+                </div>
+              </section>
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <section className="content">
+                <div className="container-fluid">
+                  <div className="card card-default">
+                    <div className="card-header">
+                      <h3 className="card-title">Parent form</h3>
+                      <div className="card-tools">
+                        <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus" /></button>
+                        <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-remove" /></button>
+                      </div>
+                    </div>
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="parentidnumber" className="control-label">Id number</label>
+                              <input type="text" name="parentidnumber" onChange={handleInput} value={bursaryinput?.parentidnumber} className={(error?.parentidnumber)? 'form-control is-invalid':'form-control'}  placeholder="Your parent id number" />
+                              <span className="help-block text-danger">{error?.parentidnumber}</span>
+                            </div>       
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="parentfullname" className="control-label">Parent full name</label>
+                              <input type="text" name="parentfullname" onChange={handleInput} value={bursaryinput?.parentfullname} className={(error?.parentfullname)? 'form-control is-invalid':'form-control'}    placeholder="parent full name" />
+                              <span className="help-block text-danger">{error?.parentfullname}</span>
+                            </div>       
+                            
+       
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="parentphonenumber" className="control-label">Parent Phone contact</label>
+                              <input type="text" name="parentphonenumber" onChange={handleInput} value={bursaryinput?.parentphonenumber}  className={(error?.parentphonenumber)? 'form-control is-invalid':'form-control'}  placeholder="parent phone contact" />
+                              {/* <input type="text" name="product_color"  onChange={handleInput} value={productInput.product_color} className={(error.product_color)? 'form-control is-invalid':'form-control'} placeholder="enter a product color" />
+                  <span className="help-block text-danger">{error.product_color}</span> */}
+         
+                              <span className="help-block text-danger">{error?.parentphonenumber}</span>
+                            </div>       
+                          </div>
+                      
+                        </div>
+                      
+                      </div>
+                     
+                  </div>
+              
+                </div>
+              </section>
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <section className="content">
+                <div className="container-fluid">
+                  <div className="card card-default">
+                    <div className="card-header">
+                      <h3 className="card-title">Student form</h3>
+                      <div className="card-tools">
+                        <button type="button" className="btn btn-tool" data-card-widget="collapse"><i className="fas fa-minus" /></button>
+                        <button type="button" className="btn btn-tool" data-card-widget="remove"><i className="fas fa-remove" /></button>
+                      </div>
+                    </div>
+                      <div className="card-body">
+                        <div className="row">
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="admissionnumber" className="control-label">Admission number</label>
+                              <input type="text" name="admissionnumber"  onChange={handleInput} value={bursaryinput?.admissionnumber} className={(error?.admissionnumber)? 'form-control is-invalid':'form-control'}  placeholder="your admission number" />
+                              <span className="help-block text-danger">{error?.admissionnumber}</span>
+                            </div>       
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="fullname" className="control-label">Full name</label>
+                              <input type="text" name="fullname" onChange={handleInput} value={bursaryinput?.fullname} className={(error?.fullname)? 'form-control is-invalid':'form-control'}   placeholder="your full name" />
+                              <span className="help-block text-danger">{error?.fullname}</span>
+                            </div>       
+                          </div> 
+        
+
+                          <div className="col-md-6">
+                            <div className="form-group">
+                            <label htmlFor="yearofstudy" className="control-label">Year of study</label>
+                              <input type="date" name="yearofstudy" onChange={handleInput} value={bursaryinput.yearofstudy} className={(error?.yearofstudy)? 'form-control is-invalid':'form-control'}  placeholder="year of study" />
+                              <span className="help-block text-danger">{error?.yearofstudy}</span>
+                            </div>       
+                          </div>
+                      
+                        </div>
+                      
+                      </div>
+                      <div className="card-footer">
+                        <button  type="submit" className="btn btn-primary">Save</button>
+                      </div>
+                  </div>
+              
+                </div>
+              </section>
+            </div>
+          </div>
+          </form>
+       
+         </div>
+
+               </Fragment>
+        )
+    
+}
